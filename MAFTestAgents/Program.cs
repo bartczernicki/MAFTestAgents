@@ -33,6 +33,9 @@ namespace MAFTestAgents
 
             // Retrieve the Chat Client
             var azureOpenAIChatClient = azureOpenAIClient.GetChatClient(azureOpenAIModelDeploymentName).AsIChatClient();
+            // Retrieve the Responses Client
+#pragma warning disable OPENAI001 // Dispose objects before losing scope
+            var azureOpenAIResponsesClient = azureOpenAIClient.GetOpenAIResponseClient(azureOpenAIModelDeploymentName).AsIChatClient();
 
             var agentWriterOptions = new ChatClientAgentOptions
             {
@@ -61,7 +64,7 @@ namespace MAFTestAgents
             // Console.WriteLine(response.Text);
 
             // Create a workflow that connects writer to editor
-            Workflow workflow =
+            Workflow workflow = 
                 AgentWorkflowBuilder
                     .BuildSequential(agentWriter, agentEditor);
 
