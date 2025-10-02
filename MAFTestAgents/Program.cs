@@ -29,8 +29,15 @@ namespace MAFTestAgents
 
             var azureOpenAIEndpointUri = new Uri(azureOpenAIEndpoint);
             var azureApiKeyCredential = new AzureKeyCredential(azureOpenAIAPIKey);
+            var azureOpenAIClientOptions = new AzureOpenAIClientOptions()
+            {
+                // Set any client options here if needed
+            };
+#pragma warning disable AOAI001 // Dispose objects before losing scope
+            azureOpenAIClientOptions.DefaultQueryParameters.Add("api-version", "v1");
+
             var azureOpenAIClient = new AzureOpenAIClient(
-                azureOpenAIEndpointUri, azureApiKeyCredential);
+                azureOpenAIEndpointUri, azureApiKeyCredential, azureOpenAIClientOptions);
 
             // Retrieve the Chat Client
             var test = azureOpenAIClient.GetChatClient(azureOpenAIModelDeploymentName);
