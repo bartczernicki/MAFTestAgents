@@ -27,14 +27,14 @@ namespace MAFTestAgents
             var azureOpenAIAPIKey = config["AzureOpenAI:APIKey"];
             var azureOpenAIModelDeploymentName = config["AzureOpenAI:ModelDeploymentName"];
 
-            var azureOpenAIEndpointUri = new Uri(azureOpenAIEndpoint);
-            var azureApiKeyCredential = new AzureKeyCredential(azureOpenAIAPIKey);
+            var azureOpenAIEndpointUri = new Uri(azureOpenAIEndpoint!);
+            var azureApiKeyCredential = new AzureKeyCredential(azureOpenAIAPIKey!);
             var azureOpenAIClientOptions = new AzureOpenAIClientOptions()
             {
                 // Set any client options here if needed
             };
 #pragma warning disable AOAI001 // Dispose objects before losing scope
-            azureOpenAIClientOptions.DefaultQueryParameters.Add("api-version", "v1");
+            // azureOpenAIClientOptions.DefaultQueryParameters.Add("api-version", "v1");
 
             var azureOpenAIClient = new AzureOpenAIClient(
                 azureOpenAIEndpointUri, azureApiKeyCredential, azureOpenAIClientOptions);
@@ -88,8 +88,8 @@ namespace MAFTestAgents
                 agentEditorOptions
                 );
 
-            // AgentRunResponse response = await agentWriter.RunAsync("Write a short story about a haunted house.");
-            // Console.WriteLine(response.Text);
+            AgentRunResponse response = await agentWriter.RunAsync("Write a short story about a haunted house.");
+            Console.WriteLine(response.Text);
 
 
             // Create a workflow that connects writer to editor
