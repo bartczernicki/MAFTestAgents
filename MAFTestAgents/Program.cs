@@ -34,7 +34,7 @@ namespace MAFTestAgents
                 // Set any client options here if needed
             };
 #pragma warning disable AOAI001 // Dispose objects before losing scope
-            azureOpenAIClientOptions.DefaultQueryParameters.Add("api-version", "v1");
+            // azureOpenAIClientOptions.DefaultQueryParameters.Add("api-version", "v1");
 
             var azureOpenAIClient = new AzureOpenAIClient(
                 azureOpenAIEndpointUri, azureApiKeyCredential, azureOpenAIClientOptions);
@@ -48,11 +48,11 @@ namespace MAFTestAgents
             var azureOpenAIResponsesClient = azureOpenAIClient.GetOpenAIResponseClient(azureOpenAIModelDeploymentName).AsIChatClient();
 
             // Define reasoning effort level
-            string effortLevel = "low";  // could be "low", "medium", "high"
+            // string effortLevel = "low";  // could be "low", "medium", "high"
             // Build options including the custom property
             var chatOptions = new ChatOptions
             {
-                AdditionalProperties = new AdditionalPropertiesDictionary(),
+                //AdditionalProperties = new AdditionalPropertiesDictionary(),
                 //AllowMultipleToolCalls = true,
                 ToolMode = ChatToolMode.Auto,
                 Tools = [
@@ -60,7 +60,7 @@ namespace MAFTestAgents
                 AIFunctionFactory.Create(FormatStory)
                     ]
             };
-            chatOptions.AdditionalProperties.Add("reasoning_effort", effortLevel);
+            // chatOptions.AdditionalProperties.Add("reasoning_effort", effortLevel);
 
 
             var agentWriterOptions = new ChatClientAgentOptions
@@ -88,8 +88,8 @@ namespace MAFTestAgents
                 agentEditorOptions
                 );
 
-            // AgentRunResponse response = await agentWriter.RunAsync("Write a short story about a haunted house.");
-            // Console.WriteLine(response.Text);
+            AgentRunResponse response = await agentWriter.RunAsync("Write a short story about a haunted house.");
+            Console.WriteLine(response.Text);
 
 
             // Create a workflow that connects writer to editor
@@ -97,13 +97,13 @@ namespace MAFTestAgents
                 AgentWorkflowBuilder
                     .BuildSequential(agentWriter, agentEditor);
 
-            AIAgent workflowAgent = await workflow.AsAgentAsync();
+            //AIAgent workflowAgent = await workflow.AsAgentAsync();
 
-            AgentRunResponse workflowResponse =
-                await workflowAgent.RunAsync("Write a short story about a haunted house.");
+            //AgentRunResponse workflowResponse =
+            //    await workflowAgent.RunAsync("Write a short story about a haunted house.");
 
 
-            Console.WriteLine(workflowResponse.Text);
+            //Console.WriteLine(workflowResponse.Text);
         }
 
         [Description("Gets the author of the story.")]
