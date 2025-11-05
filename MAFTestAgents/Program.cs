@@ -27,8 +27,8 @@ namespace MAFTestAgents
             var azureOpenAIAPIKey = config["AzureOpenAI:APIKey"];
             var azureOpenAIModelDeploymentName = config["AzureOpenAI:ModelDeploymentName"];
 
-            var azureOpenAIEndpointUri = new Uri(azureOpenAIEndpoint);
-            var azureApiKeyCredential = new AzureKeyCredential(azureOpenAIAPIKey);
+            var azureOpenAIEndpointUri = new Uri(azureOpenAIEndpoint!);
+            var azureApiKeyCredential = new AzureKeyCredential(azureOpenAIAPIKey!);
             var azureOpenAIClientOptions = new AzureOpenAIClientOptions()
             {
                 // Set any client options here if needed
