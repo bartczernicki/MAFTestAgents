@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Azure.AI.OpenAI;
+using Azure.Core;
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.AI;
@@ -16,6 +17,8 @@ namespace MAFTestAgents
             // https://devblogs.microsoft.com/dotnet/introducing-microsoft-agent-framework-preview/ 
 
             Console.WriteLine("Setting up Config...");
+            Console.WriteLine();
+
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddUserSecrets<Program>(optional: true, reloadOnChange: true);
@@ -29,10 +32,10 @@ namespace MAFTestAgents
 
             var azureOpenAIEndpointUri = new Uri(azureOpenAIEndpoint!);
             var azureApiKeyCredential = new AzureKeyCredential(azureOpenAIAPIKey!);
-            var azureOpenAIClientOptions = new AzureOpenAIClientOptions()
-            {
-                // Set any client options here if needed
-            };
+            var azureOpenAIClientOptions = new AzureOpenAIClientOptions(AzureOpenAIClientOptions.ServiceVersion.V2025_04_01_Preview);
+            // Enforce your desired wire version:
+            // azureOpenAIClientOptions.AddPolicy(new ApiVersionOverridePolicy("v1"), HttpPipelinePosition.PerCall);
+
 #pragma warning disable AOAI001 // Dispose objects before losing scope
             // azureOpenAIClientOptions.DefaultQueryParameters.Add("api-version", "v1");
 
@@ -41,23 +44,24 @@ namespace MAFTestAgents
 
             // Retrieve the Chat Client
             var test = azureOpenAIClient.GetChatClient(azureOpenAIModelDeploymentName);
+
             var azureOpenAIChatClient = azureOpenAIClient.GetChatClient(azureOpenAIModelDeploymentName).AsIChatClient();
 
             // Retrieve the Responses Client
 #pragma warning disable OPENAI001 // Dispose objects before losing scope
             var azureOpenAIResponsesClient = azureOpenAIClient.GetOpenAIResponseClient(azureOpenAIModelDeploymentName).AsIChatClient();
 
-            // Define reasoning effort level
-            // string effortLevel = "low";  // could be "low", "medium", "high"
-            // Build options including the custom property
             var chatOptions = new ChatOptions
             {
-                //AdditionalProperties = new AdditionalPropertiesDictionary(),
-                //AllowMultipleToolCalls = true,
+                RawRepresentationFactory = _ => new ChatCompletionOptions()
+                {
+                    ReasoningEffortLevel = ChatReasoningEffortLevel.Minimal,
+                },
+                MaxOutputTokens = 10000,
                 ToolMode = ChatToolMode.Auto,
                 Tools = [
-                AIFunctionFactory.Create(GetAuthor),
-                AIFunctionFactory.Create(FormatStory)
+                    AIFunctionFactory.Create(GetAuthor),
+                    AIFunctionFactory.Create(FormatStory)
                     ]
             };
             // chatOptions.AdditionalProperties.Add("reasoning_effort", effortLevel);
